@@ -37,8 +37,15 @@ def scrape_product_details(link):
         
     price_elemets = soup.find_all('span',class_='price')
     price = price_elemets[0].get_text(strip=True) if price_elemets else None
+    discount_elements_arr = []
+    discount_elements = soup.find_all('div',class_='action-box-1')
+    discount_elements_arr.append(discount_elements)
+    if discount_elements_arr:
+        discounts = [element.get_text(strip=True) for element in discount_elements[:2]]
+    else:
+        discounts = []
 
-    return {'name': name, 'price': price, 'link': link}
+    return {'name': name, 'price': price, 'link': link, 'discounts':discounts}
 
 def save_to_csv(data,filename='poducts.csv'):
      df = pd.DataFrame(data)
@@ -50,7 +57,7 @@ def main():
     print("STARTING SCRAPER")
     all_product_links = []
 
-    for page in range(1,5):
+    for page in range(1):
         all_product_links.extend(collect_product_links(page))
 
     with ThreadPoolExecutor(max_workers=5) as executor:
