@@ -37,15 +37,23 @@ def scrape_product_details(link):
         
     price_elemets = soup.find_all('span',class_='price')
     price = price_elemets[0].get_text(strip=True) if price_elemets else None
+
     discount_elements_arr = []
     discount_elements = soup.find_all('div',class_='action-box-1')
     discount_elements_arr.append(discount_elements)
+
     if discount_elements_arr:
         discounts = [element.get_text(strip=True) for element in discount_elements[:2]]
     else:
         discounts = []
+    
+    image_wrap = soup.find('div',class_='easyzoom')
+    image_urls = []
+    if image_wrap:
+        image_wrap_elements = image_wrap.find_all('img')
+        image_urls = [img['src'] for img in image_wrap_elements if 'src' in img.attrs]
 
-    return {'name': name, 'price': price, 'link': link, 'discounts':discounts}
+    return {'name': name, 'price': price, 'link': link, 'discounts':discounts,'product-image': image_urls}
 
 def save_to_csv(data,filename='poducts.csv'):
      df = pd.DataFrame(data)
