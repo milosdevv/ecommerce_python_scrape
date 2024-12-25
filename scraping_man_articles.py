@@ -64,7 +64,7 @@ def main():
     print("STARTING SCRAPER")
     all_product_links = []
 
-    for page in range(1):
+    for page in range(1,95):
         all_product_links.extend(collect_product_links(page))
 
     with ThreadPoolExecutor(max_workers=5) as executor:
